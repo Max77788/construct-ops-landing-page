@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construct Ops — Billing Control for Construction Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1220;
+  --navy2:#111927;
+  --navy3:#162032;
+  --navy4:#1C2A3F;
+  --navy5:#243147;
+  --orange:#F97316;
+  --orange2:#FB923C;
+  --orange-dim:rgba(249,115,22,0.12);
+  --orange-border:rgba(249,115,22,0.25);
+  --white:#FFFFFF;
+  --off:#F1F5F9;
+  --g1:#E2E8F0;
+  --g2:#94A3B8;
+  --g3:#64748B;
+  --g4:#334155;
+  --green:#10B981;
+  --green-dim:rgba(16,185,129,0.1);
+  --amber:#F59E0B;
+  --red:#EF4444;
+  --font-display:'Playfair Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --r:8px;--r2:14px;--r3:20px;--r4:28px
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--navy);color:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(11,18,32,0.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.05)}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo{width:34px;height:34px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--white);letter-spacing:-.5px;flex-shrink:0}
+.nav-name{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--white)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-link{font-size:14px;color:var(--g2);text-decoration:none;transition:color .15s}
+.nav-link:hover{color:var(--white)}
+.nav-cta{background:var(--orange);color:var(--white);border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:500;font-family:var(--font-body);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-block}
+.nav-cta:hover{background:var(--orange2);transform:translateY(-1px)}
+.nav-powered{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--g3)}
+.nav-powered span{color:var(--orange);font-weight:500}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(249,115,22,0.08) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 80% 60%,rgba(249,115,22,0.04) 0%,transparent 60%);pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 80%)}
+.hero-content{position:relative;z-index:1;max-width:820px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:500;color:var(--orange);letter-spacing:.06em;text-transform:uppercase;margin-bottom:28px}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:var(--font-display);font-size:clamp(40px,6vw,68px);font-weight:400;line-height:1.08;color:var(--white);margin-bottom:24px;letter-spacing:-.5px}
+h1 em{color:var(--orange);font-style:normal}
+h1 .line2{display:block;font-style:italic;color:var(--g2);font-size:.85em}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--g2);max-width:580px;margin:0 auto 40px;line-height:1.7}
+.hero-cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+.btn-hero{padding:15px 32px;font-size:15px;font-weight:500;border-radius:var(--r);font-family:var(--font-body);cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-hero-primary{background:var(--orange);color:var(--white)}
+.btn-hero-primary:hover{background:var(--orange2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(249,115,22,0.3)}
+.btn-hero-ghost{background:rgba(255,255,255,0.06);color:var(--g1);border:1px solid rgba(255,255,255,0.12)}
+.btn-hero-ghost:hover{background:rgba(255,255,255,0.1);transform:translateY(-1px)}
+.hero-proof{display:flex;gap:0;justify-content:center;flex-wrap:wrap;border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);background:rgba(255,255,255,0.03);overflow:hidden;max-width:680px;margin:0 auto}
+.proof-item{flex:1;min-width:140px;padding:18px 24px;text-align:center;border-right:1px solid rgba(255,255,255,0.07)}
+.proof-item:last-child{border-right:none}
+.proof-num{font-family:var(--font-display);font-size:28px;color:var(--white);font-weight:400;line-height:1}
+.proof-num span{color:var(--orange)}
+.proof-label{font-size:11px;color:var(--g3);margin-top:4px;line-height:1.4}
+
+/* ── PROBLEM SECTION ── */
+.section{padding:96px 5%}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.section-title{font-family:var(--font-display);font-size:clamp(30px,4vw,46px);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:16px}
+.section-sub{font-size:16px;color:var(--g2);max-width:560px;line-height:1.7;margin-bottom:48px}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.problem-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);padding:24px;position:relative;overflow:hidden;transition:border-color .2s}
+.problem-card:hover{border-color:rgba(249,115,22,0.25)}
+.problem-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),transparent)}
+.problem-icon{font-size:24px;margin-bottom:14px}
+.problem-title{font-size:15px;font-weight:500;color:var(--white);margin-bottom:8px}
+.problem-desc{font-size:13px;color:var(--g2);line-height:1.7}
+.problem-cost{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;font-weight:500;color:var(--red);background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:100px;padding:3px 10px}
+
+/* ── HOW IT WORKS ── */
+.how-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.how-steps{display:flex;flex-direction:column;gap:0}
+.how-step{display:flex;gap:18px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .15s}
+.how-step:last-child{border-bottom:none}
+.how-step.active .how-step-num{background:var(--orange);color:var(--white)}
+.how-step.active .how-step-title{color:var(--white)}
+.how-step-num{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--g3);flex-shrink:0;transition:all .2s;margin-top:2px}
+.how-step-body{flex:1}
+.how-step-title{font-size:15px;font-weight:500;color:var(--g2);margin-bottom:4px;transition:color .2s}
+.how-step-desc{font-size:13px;color:var(--g3);line-height:1.6;display:none}
+.how-step.active .how-step-desc{display:block;color:var(--g2)}
+.how-visual{position:sticky;top:88px}
+.how-screen{background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r3);overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.5)}
+.how-screen-bar{background:rgba(0,0,0,0.3);height:36px;display:flex;align-items:center;padding:0 16px;gap:6px}
+.how-screen-dot{width:9px;height:9px;border-radius:50%}
+.how-screen-title{font-size:11px;color:var(--g3);margin-left:8px;font-weight:500}
+.how-screen-body{padding:20px}
+.screen-panel{display:none}
+.screen-panel.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.mini-drop{border:2px dashed rgba(249,115,22,0.3);border-radius:var(--r);padding:28px;text-align:center;background:rgba(249,115,22,0.04);margin-bottom:14px}
+.mini-drop-icon{font-size:28px;margin-bottom:8px}
+.mini-drop-text{font-size:13px;color:var(--g2);margin-bottom:10px}
+.mini-btn{display:inline-block;background:var(--orange);color:var(--white);padding:7px 16px;border-radius:6px;font-size:12px;font-weight:500}
+.mini-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px}
+.mini-row:last-child{border-bottom:none}
+.mini-label{color:var(--g2)}
+.mini-val{color:var(--white);font-weight:500}
+.mini-val.green{color:var(--green)}
+.mini-val.orange{color:var(--orange)}
+.mini-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:500}
+.mini-badge.green{background:rgba(16,185,129,0.12);color:var(--green)}
+.mini-badge.amber{background:rgba(245,158,11,0.12);color:var(--amber)}
+.mini-badge.red{background:rgba(239,68,68,0.12);color:var(--red)}
+.mini-progress{height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:4px;overflow:hidden}
+.mini-progress-fill{height:100%;border-radius:2px;background:var(--orange)}
+.mini-phone{width:180px;margin:0 auto;background:var(--navy2);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden}
+.mini-phone-bar{height:20px;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:9px;color:var(--g3)}
+.mini-phone-body{padding:14px}
+.mini-phone-proj{font-size:9px;color:var(--orange);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.mini-phone-title{font-size:12px;font-weight:500;color:var(--white);margin-bottom:8px;line-height:1.3}
+.mini-phone-row{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px}
+.mini-phone-input{background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:4px;padding:5px 8px;font-size:11px;color:var(--white);margin:6px 0;width:100%}
+.mini-phone-btn{width:100%;background:var(--orange);color:var(--white);border:none;border-radius:5px;padding:7px;font-size:11px;font-weight:500;margin-top:6px}
+
+/* ── FEATURES ── */
+.features-section{background:var(--navy2);padding:96px 5%}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.feat-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);padding:26px;transition:all .2s}
+.feat-card:hover{border-color:rgba(249,115,22,0.2);transform:translateY(-2px)}
+.feat-icon-wrap{width:44px;height:44px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+.feat-title{font-size:16px;font-weight:500;color:var(--white);margin-bottom:8px}
+.feat-desc{font-size:13px;color:var(--g2);line-height:1.7}
+.feat-tag{display:inline-flex;align-items:center;gap:4px;margin-top:12px;font-size:11px;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:100px;padding:2px 8px}
+
+/* ── ROLES ── */
+.roles-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.role-tab{padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.1);color:var(--g2);background:transparent;font-family:var(--font-body);transition:all .15s}
+.role-tab.active{background:var(--orange);color:var(--white);border-color:var(--orange)}
+.role-tab:hover:not(.active){border-color:rgba(255,255,255,0.2);color:var(--white)}
+.role-panel{display:none;animation:fadeUp .25s ease}
+.role-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.role-gets{background:var(--navy3);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);padding:24px}
+.role-gets-title{font-size:12px;font-weight:500;color:var(--g3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.role-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;color:var(--g2);line-height:1.5;align-items:flex-start}
+.role-item:last-child{border-bottom:none}
+.role-check{color:var(--orange);flex-shrink:0;margin-top:2px;font-size:13px}
+.role-no-more{background:var(--navy3);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);padding:24px}
+.no-more-item{display:flex;gap:10px;padding:7px 0;font-size:13px;color:var(--g3);align-items:flex-start;border-bottom:1px solid rgba(255,255,255,0.04)}
+.no-more-item:last-child{border-bottom:none}
+.no-more-x{color:var(--red);flex-shrink:0;font-size:12px;margin-top:2px}
+
+/* ── PROCORE COMPARISON ── */
+.compare-section{background:var(--navy2);padding:96px 5%}
+.compare-table-wrap{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);overflow:hidden;margin-top:48px}
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table thead th{padding:14px 20px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;text-align:center;border-bottom:1px solid rgba(255,255,255,0.07);color:var(--g3)}
+.compare-table thead th:first-child{text-align:left;color:var(--g2)}
+.compare-table thead th.co-col{color:var(--orange)}
+.compare-table tbody td{padding:13px 20px;font-size:14px;color:var(--g2);border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;vertical-align:middle}
+.compare-table tbody tr:last-child td{border-bottom:none}
+.compare-table tbody td:first-child{text-align:left}
+.compare-table tbody tr:hover td{background:rgba(255,255,255,0.02)}
+.co-win{color:var(--green);font-size:16px}
+.pc-lose{color:var(--red);font-size:16px}
+.pc-neutral{color:var(--g3);font-size:14px}
+.cat-divider td{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);padding-top:18px !important;background:transparent !important}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.price-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);padding:28px;transition:border-color .2s;position:relative}
+.price-card:hover{border-color:rgba(255,255,255,0.15)}
+.price-card.featured{border-color:var(--orange);background:rgba(249,115,22,0.05)}
+.price-ribbon{background:var(--orange);color:var(--white);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;display:inline-block;margin-bottom:12px}
+.price-tier{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin-bottom:6px}
+.price-name{font-family:var(--font-display);font-size:22px;color:var(--white);font-weight:400;margin-bottom:4px}
+.price-amount{font-family:var(--font-display);font-size:40px;color:var(--white);font-weight:400;margin:14px 0 4px;line-height:1}
+.price-amount.featured{color:var(--orange)}
+.price-per{font-size:13px;color:var(--g3);margin-bottom:6px}
+.price-setup{font-size:12px;color:var(--g3);padding:8px 0;border-top:1px solid rgba(255,255,255,0.06);margin:10px 0}
+.price-desc{font-size:13px;color:var(--g2);line-height:1.6;margin-bottom:16px;min-height:48px}
+.price-feat{font-size:13px;color:var(--g2);padding:5px 0;display:flex;gap:8px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,0.04)}
+.price-feat:last-of-type{border-bottom:none}
+.price-feat::before{content:'✓';color:var(--orange);font-weight:600;flex-shrink:0;font-size:12px;margin-top:2px}
+.price-cta{width:100%;margin-top:20px;padding:13px;background:var(--orange);color:var(--white);border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:var(--font-body);cursor:pointer;transition:all .15s}
+.price-cta:hover{background:var(--orange2)}
+.price-cta.ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--g1)}
+.price-cta.ghost:hover{background:rgba(255,255,255,0.1)}
+.pricing-callout{background:rgba(249,115,22,0.06);border:1px solid var(--orange-border);border-radius:var(--r);padding:12px 16px;margin-top:14px;font-size:12px;color:var(--g2);line-height:1.6}
+.pricing-callout strong{color:var(--orange)}
+
+/* ── DEMO GATE ── */
+.gate-section{padding:96px 5%;background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%)}
+.gate-wrap{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.gate-left .section-title{font-size:clamp(28px,3.5vw,40px);margin-bottom:16px}
+.gate-left p{font-size:15px;color:var(--g2);line-height:1.7;margin-bottom:24px}
+.gate-preview{background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r2);overflow:hidden;position:relative}
+.gate-preview-blur{position:absolute;inset:0;background:rgba(11,18,32,0.72);backdrop-filter:blur(6px);z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--r2)}
+.gate-lock{font-size:32px}
+.gate-lock-text{font-size:13px;color:var(--g2);text-align:center;max-width:200px;line-height:1.5}
+.gate-preview-content{padding:16px;filter:blur(1px)}
+.gate-form-wrap{background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r3);padding:32px}
+.gate-form-title{font-family:var(--font-display);font-size:24px;color:var(--white);font-weight:400;margin-bottom:6px}
+.gate-form-sub{font-size:13px;color:var(--g2);margin-bottom:24px;line-height:1.6}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--g2);margin-bottom:6px;letter-spacing:.03em}
+.form-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:11px 14px;font-size:14px;color:var(--white);font-family:var(--font-body);outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--orange)}
+.form-input::placeholder{color:var(--g3)}
+.form-select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:11px 14px;font-size:14px;color:var(--white);font-family:var(--font-body);outline:none;appearance:none;cursor:pointer}
+.form-select option{background:var(--navy3);color:var(--white)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-submit{width:100%;padding:14px;background:var(--orange);color:var(--white);border:none;border-radius:var(--r);font-size:15px;font-weight:500;font-family:var(--font-body);cursor:pointer;transition:all .2s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.form-submit:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(249,115,22,0.3)}
+.form-privacy{font-size:11px;color:var(--g3);text-align:center;margin-top:10px;line-height:1.5}
+.form-success{display:none;text-align:center;padding:20px 0}
+.form-success-icon{font-size:48px;margin-bottom:12px}
+.form-success-title{font-family:var(--font-display);font-size:22px;color:var(--white);margin-bottom:8px;font-weight:400}
+.form-success-sub{font-size:14px;color:var(--g2);margin-bottom:20px;line-height:1.6}
+.what-to-expect{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;text-align:left}
+.expect-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--g2);line-height:1.5}
+.expect-check{color:var(--orange);flex-shrink:0;font-weight:600}
+
+/* ── ROADMAP ── */
+.roadmap-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.rm-card{border-radius:var(--r2);padding:24px;border:1px solid}
+.rm-card.now{background:rgba(249,115,22,0.06);border-color:rgba(249,115,22,0.25)}
+.rm-card.next{background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.2)}
+.rm-card.future{background:rgba(16,185,129,0.04);border-color:rgba(16,185,129,0.15)}
+.rm-phase{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.rm-phase.orange{color:var(--orange)}
+.rm-phase.amber{color:var(--amber)}
+.rm-phase.green{color:var(--green)}
+.rm-title{font-family:var(--font-display);font-size:18px;color:var(--white);font-weight:400;margin-bottom:4px}
+.rm-when{font-size:11px;color:var(--g3);margin-bottom:14px}
+.rm-item{font-size:13px;color:var(--g2);padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:7px;align-items:flex-start;line-height:1.5}
+.rm-item:last-child{border-bottom:none}
+.rm-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:6px}
+
+/* ── SOCIAL PROOF ── */
+.proof-section{background:var(--navy2);padding:72px 5%}
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+.proof-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r2);padding:24px}
+.proof-quote{font-size:14px;color:var(--g1);line-height:1.7;margin-bottom:16px;font-style:italic}
+.proof-quote::before{content:'"';color:var(--orange);font-size:24px;font-family:var(--font-display);line-height:0;vertical-align:-.4em;margin-right:2px}
+.proof-author{display:flex;align-items:center;gap:10px}
+.proof-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--g1);flex-shrink:0}
+.proof-name{font-size:13px;font-weight:500;color:var(--white)}
+.proof-role{font-size:11px;color:var(--g3)}
+
+/* ── POWERED BY ── */
+.powered-bar{background:var(--navy3);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:20px 5%;display:flex;align-items:center;justify-content:center;gap:12px}
+.powered-text{font-size:12px;color:var(--g3)}
+.powered-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.powered-logo{width:22px;height:22px;background:var(--orange);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--white)}
+.powered-name{font-size:13px;font-weight:500;color:var(--white)}
+.powered-name span{color:var(--orange)}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);padding:48px 5% 32px;border-top:1px solid rgba(255,255,255,0.05)}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:flex;gap:40px;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap}
+.footer-brand-block{max-width:280px}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.footer-logo{width:30px;height:30px;background:var(--orange);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)}
+.footer-brand-name{font-family:var(--font-display);font-size:16px;color:var(--white);font-weight:600}
+.footer-brand-desc{font-size:13px;color:var(--g3);line-height:1.6}
+.footer-links-group{min-width:140px}
+.footer-links-title{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--g3);margin-bottom:14px}
+.footer-link{display:block;font-size:13px;color:var(--g2);text-decoration:none;margin-bottom:8px;transition:color .15s}
+.footer-link:hover{color:var(--orange)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12px;color:var(--g3)}
+.footer-powered{font-size:12px;color:var(--g3)}
+.footer-powered a{color:var(--orange);text-decoration:none}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--white);display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .problem-grid,.features-grid,.pricing-grid,.roadmap-row,.proof-grid{grid-template-columns:1fr}
+  .how-wrap,.gate-wrap,.role-panel.active{grid-template-columns:1fr}
+  .how-visual,.gate-preview{display:none}
+  .form-row{grid-template-columns:1fr}
+  .footer-top{flex-direction:column}
+  .hero-proof{flex-direction:column}
+  .proof-item{border-right:none;border-bottom:1px solid rgba(255,255,255,0.07)}
+  .proof-item:last-child{border-bottom:none}
+  nav .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">CO</div>
+    <span class="nav-name">Construct Ops</span>
+  </a>
+  <div class="nav-links">
+    <a href="#how" class="nav-link">How It Works</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#roadmap" class="nav-link">Roadmap</a>
+    <div style="width:1px;height:18px;background:rgba(255,255,255,0.1)"></div>
+    <div class="nav-powered">
+      Powered by <a href="https://aifusioniqlabs.com" target="_blank" class="powered-brand" style="gap:5px">
+        <div class="powered-logo" style="width:18px;height:18px;font-size:8px">AI</div>
+        <span class="nav-name" style="font-size:13px;font-family:var(--font-body)"><span style="color:var(--orange)">AI FusionIQ</span> Labs</span>
+      </a>
+    </div>
+  </div>
+  <a href="https://avensis-logflow.vercel.app/shipper/login" class="nav-cta" target="_blank" rel="noopener noreferrer">Book a Demo →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Built for Construction Operations
+    </div>
+    <h1>Stop losing money<br>to billing chaos.<br><em>Start controlling cash flow.</em></h1>
+    <p class="hero-sub">Construct Ops makes subcontractor invoice submission predictable, complete, and deadline-driven — across every project, every location, regardless of size.</p>
+    <div class="hero-cta-row">
+      <button class="btn-hero btn-hero-primary" onclick="scrollToDemo()">Book a Discovery Call →</button>
+      <button class="btn-hero btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See How It Works</button>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-item">
+        <div class="proof-num">4–6<span>wk</span></div>
+        <div class="proof-label">Cash flow lag eliminated per project</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-num">$<span>0</span></div>
+        <div class="proof-label">Manual invoice reconciliation</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-num">100<span>%</span></div>
+        <div class="proof-label">Submission visibility every cycle</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-num">6<span>wk</span></div>
+        <div class="proof-label">To fully operational</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">The Problem</div>
+    <h2 class="section-title">The system works today.<br>It will not scale.</h2>
+    <p class="section-sub">Every month, the same sequence plays out across construction portfolios. One broken link and billing delays — and billing delays mean cash flow lags.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-icon">📞</div>
+        <div class="problem-title">Late Submissions</div>
+        <div class="problem-desc">Subcontractor submits late. PM chases via email and phone. Hours spent on follow-up that should be automated.</div>
+        <div class="problem-cost">↑ Staff time wasted</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">⚠️</div>
+        <div class="problem-title">Invoice Errors</div>
+        <div class="problem-desc">Invoice arrives with formula errors or missing backup docs. Accounting spends hours correcting before billing can go out.</div>
+        <div class="problem-cost">↑ Billing cycle delayed</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">💸</div>
+        <div class="problem-title">Deferred Revenue</div>
+        <div class="problem-desc">A single delayed billing cycle on one project can represent hundreds of thousands of dollars sitting idle. Across a portfolio, this compounds.</div>
+        <div class="problem-cost">↑ Cash flow at risk</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">📊</div>
+        <div class="problem-title">No Visibility</div>
+        <div class="problem-desc">Billing readiness is unknown until someone checks. Leadership has no real-time view of what's ready, what's missing, or what's at risk.</div>
+        <div class="problem-cost">↑ Management blind spot</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">🔄</div>
+        <div class="problem-title">Excel & Email Chaos</div>
+        <div class="problem-desc">Spreadsheets, email threads, and SharePoint folders replace a system. Every new project reinvents the process. No playbook survives growth.</div>
+        <div class="problem-cost">↑ Can't scale</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">💰</div>
+        <div class="problem-title">The Platform Gap</div>
+        <div class="problem-desc">Enterprise platforms work for large jobs — at a price that only makes sense at scale. For smaller and mid-size projects, the cost-to-value equation breaks down. Those projects run on chaos. That gap is where money leaks.</div>
+        <div class="problem-cost">↑ Two-tier operations</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how" style="background:var(--navy2)">
+  <div class="section-inner">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="section-title">One system. All projects.<br>All locations.</h2>
+    <p class="section-sub">From budget upload to billing package — every step owned, automated, and audit-trailed.</p>
+    <div class="how-wrap">
+      <div class="how-steps">
+        <div class="how-step active" onclick="setHowStep(0)">
+          <div class="how-step-num">1</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Upload your budget file</div>
+            <div class="how-step-desc">PM uploads the standardized Excel budget. System parses vendors, contract values, cost codes, retainage terms, and timeline. Project workspace and live ledger created instantly. This is the foundation everything runs on.</div>
+          </div>
+        </div>
+        <div class="how-step" onclick="setHowStep(1)">
+          <div class="how-step-num">2</div>
+          <div class="how-step-body">
+            <div class="how-step-title">System opens billing cycle</div>
+            <div class="how-step-desc">On the configured date (typically the 20th), automated reminders go out via SMS and email to every vendor. Reminder on the 23rd. Hard cutoff on the 25th. No human follow-up required.</div>
+          </div>
+        </div>
+        <div class="how-step" onclick="setHowStep(2)">
+          <div class="how-step-num">3</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Subs submit in under 2 minutes</div>
+            <div class="how-step-desc">Sub clicks their secure magic link — no app download, no password. They see their contract context, enter line-item amounts, upload one backup doc, and sign digitally. Done.</div>
+          </div>
+        </div>
+        <div class="how-step" onclick="setHowStep(3)">
+          <div class="how-step-num">4</div>
+          <div class="how-step-body">
+            <div class="how-step-title">PM reviews and approves the batch</div>
+            <div class="how-step-desc">One screen shows all vendors: submitted, missing, over-budget. PM approves, edits with audit trail, or rejects with a comment. Every action logged. No spreadsheet, no email thread.</div>
+          </div>
+        </div>
+        <div class="how-step" onclick="setHowStep(4)">
+          <div class="how-step-num">5</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Billing package generated, ledger updated</div>
+            <div class="how-step-desc">One click generates the Excel and PDF billing package — formatted to your template, backup docs bundled, retainage calculated. Ledger updates automatically. SharePoint filed. Cash cycle closed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual">
+        <div class="how-screen">
+          <div class="how-screen-bar">
+            <div class="how-screen-dot" style="background:#FF5F57"></div>
+            <div class="how-screen-dot" style="background:#FEBC2E"></div>
+            <div class="how-screen-dot" style="background:#28C840"></div>
+            <div class="how-screen-title" id="how-screen-title">Budget Upload</div>
+          </div>
+          <div class="how-screen-body">
+            <div class="screen-panel active" id="sp-0">
+              <div class="mini-drop">
+                <div class="mini-drop-icon">📂</div>
+                <div class="mini-drop-text" style="font-size:11px;color:var(--g2);margin-bottom:8px">Drop budget Excel here</div>
+                <div class="mini-btn">Select File</div>
+              </div>
+              <div class="mini-row"><span class="mini-label">Contract value parsed</span><span class="mini-val">$4,200,000</span></div>
+              <div class="mini-row"><span class="mini-label">Vendors identified</span><span class="mini-val">8 subs</span></div>
+              <div class="mini-row"><span class="mini-label">Cost codes mapped</span><span class="mini-val">24 items</span></div>
+              <div class="mini-row"><span class="mini-label">Retainage terms</span><span class="mini-val orange">10% — all vendors</span></div>
+              <div class="mini-row"><span class="mini-label">Validation</span><span class="mini-val green">✓ Ready to go live</span></div>
+            </div>
+            <div class="screen-panel" id="sp-1">
+              <div style="font-size:11px;color:var(--g3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">May Billing Cycle — Active</div>
+              <div class="mini-row"><span class="mini-label">Texas Steel Framing</span><span class="mini-badge green">Submitted</span></div>
+              <div class="mini-row"><span class="mini-label">Coastal Concrete Works</span><span class="mini-badge green">Submitted</span></div>
+              <div class="mini-row"><span class="mini-label">Gulf Coast Electric</span><span class="mini-badge green">Submitted</span></div>
+              <div class="mini-row"><span class="mini-label">Southwest Roofing</span><span class="mini-badge red">Missing</span></div>
+              <div style="margin-top:10px;font-size:10px;color:var(--orange)">⚡ Escalation reminder sent to Southwest Roofing</div>
+            </div>
+            <div class="screen-panel" id="sp-2">
+              <div class="mini-phone">
+                <div class="mini-phone-bar"><span>9:41</span><span>LTE ●●●</span></div>
+                <div class="mini-phone-body">
+                  <div class="mini-phone-proj">Construct Ops · May</div>
+                  <div class="mini-phone-title">Submit Your Billing</div>
+                  <div class="mini-phone-row"><span style="color:var(--g3);font-size:9px">Contract</span><span style="color:var(--white);font-size:9px">$210K</span></div>
+                  <div class="mini-phone-row"><span style="color:var(--g3);font-size:9px">Remaining</span><span style="color:var(--green);font-size:9px">$88K</span></div>
+                  <input class="mini-phone-input" value="$87,500" readonly>
+                  <button class="mini-phone-btn">Submit Billing ✓</button>
+                </div>
+              </div>
+            </div>
+            <div class="screen-panel" id="sp-3">
+              <div style="font-size:11px;color:var(--g3);margin-bottom:10px">PM Batch Review — Riverside Hub</div>
+              <div class="mini-row"><span class="mini-label">Texas Steel — $87,500</span><span style="display:flex;gap:4px"><span style="font-size:10px;color:var(--green);cursor:pointer">✓ Approve</span></span></div>
+              <div style="height:3px"></div>
+              <div class="mini-row"><span class="mini-label">Coastal Concrete — $115K</span><span style="font-size:10px;color:var(--green)">✓ Approve</span></div>
+              <div style="height:3px"></div>
+              <div class="mini-row"><span class="mini-label">Gulf Coast Electric — $62K</span><span style="font-size:10px;color:var(--green)">✓ Approve</span></div>
+              <div style="height:3px"></div>
+              <div class="mini-row" style="opacity:.5"><span class="mini-label">SW Roofing — Missing</span><span style="font-size:10px;color:var(--red)">Hold</span></div>
+              <div style="background:rgba(249,115,22,0.08);border:1px solid var(--orange-border);border-radius:6px;padding:8px;margin-top:10px;font-size:10px;color:var(--orange)">Approve All & Generate Package →</div>
+            </div>
+            <div class="screen-panel" id="sp-4">
+              <div style="font-size:11px;color:var(--g3);margin-bottom:8px">Billing Package — May 2025</div>
+              <div class="mini-row"><span class="mini-label">Total approved</span><span class="mini-val">$418,450</span></div>
+              <div class="mini-row"><span class="mini-label">Retainage (10%)</span><span class="mini-val orange">— $41,845</span></div>
+              <div class="mini-row"><span class="mini-label">Net due to client</span><span class="mini-val green">$376,605</span></div>
+              <div style="margin-top:10px;display:flex;gap:6px">
+                <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:6px 8px;font-size:10px;color:var(--g2);text-align:center">↓ Excel</div>
+                <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:6px 8px;font-size:10px;color:var(--g2);text-align:center">↓ PDF</div>
+                <div style="flex:2;background:var(--orange);border-radius:5px;padding:6px 8px;font-size:10px;color:var(--white);text-align:center;font-weight:500">Send to Client →</div>
+              </div>
+              <div style="font-size:10px;color:var(--green);margin-top:8px">✓ Ledger updated · SharePoint filed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="section-inner">
+    <div class="section-eyebrow">Platform Features</div>
+    <h2 class="section-title">Everything in one system.</h2>
+    <p class="section-sub">Built specifically for construction operations — not adapted from a generic workflow tool.</p>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon-wrap">📂</div>
+        <div class="feat-title">Budget-Controlled Ledger</div>
+        <div class="feat-desc">Upload your Excel budget once. It becomes the live control source — every submission, approval, and payment tracked against it automatically.</div>
+        <div class="feat-tag">Foundation of the platform</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">📱</div>
+        <div class="feat-title">Magic-Link Sub Submission</div>
+        <div class="feat-desc">Subs click a secure link — no app, no password. Enter amounts, upload one doc, sign. Done in under 2 minutes from any phone on any job site.</div>
+        <div class="feat-tag">No adoption friction</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">⏰</div>
+        <div class="feat-title">Automated Deadline Engine</div>
+        <div class="feat-desc">System sends SMS and email reminders automatically on cycle open, day 23, and day 25. No PM chasing. No missed deadlines. No excuses.</div>
+        <div class="feat-tag">Zero manual follow-up</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">✅</div>
+        <div class="feat-title">PM Batch Review</div>
+        <div class="feat-desc">One screen. All vendors. Approve, edit with full audit trail, or reject with a comment. Every PM action timestamped. Change-order workflow included.</div>
+        <div class="feat-tag">Full audit trail</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">📄</div>
+        <div class="feat-title">Billing Package Generator</div>
+        <div class="feat-desc">One click produces the Excel and PDF package — formatted to your template, backup docs bundled, retainage calculated. Zero manual assembly.</div>
+        <div class="feat-tag">Your format, every time</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">📊</div>
+        <div class="feat-title">Real-Time Dashboards</div>
+        <div class="feat-desc">PMs see submission status per project. Directors see cross-project AR exposure and cash at risk. Leadership finally sees what's happening in real time.</div>
+        <div class="feat-tag">Every role, right view</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🔗</div>
+        <div class="feat-title">Existing Platform Integration</div>
+        <div class="feat-desc">Works alongside your enterprise project management platform on large jobs. Fills the gap on smaller projects. Pushes approved billing data to your accounting system to eliminate the last manual re-entry step.</div>
+        <div class="feat-tag">No re-entry ever</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🏗️</div>
+        <div class="feat-title">Multi-Location, Multi-Project</div>
+        <div class="feat-desc">The playbook you build in month one applies to project 5 and project 20. New locations inherit the same process. No retraining, no reinvention.</div>
+        <div class="feat-tag">Scales automatically</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🔒</div>
+        <div class="feat-title">SharePoint Auto-Filing</div>
+        <div class="feat-desc">Every document automatically filed by project, billing cycle, and vendor. Searchable history. Dispute resolution in seconds, not hours of inbox digging.</div>
+        <div class="feat-tag">Instant audit trail</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">Built for Every Role</div>
+    <h2 class="section-title">Everyone gets exactly<br>what they need.</h2>
+    <p class="section-sub">No one is left managing the system. Everyone is just doing their job — faster.</p>
+    <div class="roles-tabs">
+      <button class="role-tab active" onclick="setRole('director')">Director / Owner</button>
+      <button class="role-tab" onclick="setRole('pm')">Project Manager</button>
+      <button class="role-tab" onclick="setRole('sub')">Subcontractor</button>
+      <button class="role-tab" onclick="setRole('billing')">Billing Team</button>
+    </div>
+    <div class="role-panel active" id="role-director">
+      <div class="role-gets">
+        <div class="role-gets-title">What you get</div>
+        <div class="role-item"><span class="role-check">→</span>Cross-project AR exposure — one number, always current</div>
+        <div class="role-item"><span class="role-check">→</span>Billing cycle status across all active projects at a glance</div>
+        <div class="role-item"><span class="role-check">→</span>Cash at risk visibility if any cycle is running late</div>
+        <div class="role-item"><span class="role-check">→</span>Budget burn rate per project without asking a PM</div>
+        <div class="role-item"><span class="role-check">→</span>Retainage balance tracked across all projects</div>
+        <div class="role-item"><span class="role-check">→</span>Every new project inherits the same process automatically</div>
+      </div>
+      <div class="role-no-more">
+        <div class="role-gets-title">No more</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Asking PMs for billing status updates</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Waiting for month-end reconciliation to see where cash stands</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Growth stalling because the process doesn't scale</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>New projects reinventing the billing wheel every time</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Deferred revenue from cycles that close late</div>
+      </div>
+    </div>
+    <div class="role-panel" id="role-pm">
+      <div class="role-gets">
+        <div class="role-gets-title">What you get</div>
+        <div class="role-item"><span class="role-check">→</span>One batch review screen — submitted, missing, ready to approve</div>
+        <div class="role-item"><span class="role-check">→</span>Mark vendors "not expected this cycle" without system flagging them</div>
+        <div class="role-item"><span class="role-check">→</span>Edit any submission with comment — full audit trail behind you</div>
+        <div class="role-item"><span class="role-check">→</span>One-click escalation to any missing vendor</div>
+        <div class="role-item"><span class="role-check">→</span>Change order workflow — CO request, approval, contract value updated</div>
+        <div class="role-item"><span class="role-check">→</span>Budget ledger always current — no manual reconciliation</div>
+      </div>
+      <div class="role-no-more">
+        <div class="role-gets-title">No more</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Chasing subs via email and phone</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Manually consolidating invoice amounts into a spreadsheet</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Losing track of who has submitted and who hasn't</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Editing a sub's number with no record of what changed or why</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Month-end panic when billing closes late</div>
+      </div>
+    </div>
+    <div class="role-panel" id="role-sub">
+      <div class="role-gets">
+        <div class="role-gets-title">What you get</div>
+        <div class="role-item"><span class="role-check">→</span>Text and email with your secure link — no app install</div>
+        <div class="role-item"><span class="role-check">→</span>See your contract value, billed to date, and remaining before entering anything</div>
+        <div class="role-item"><span class="role-check">→</span>Enter line-item amounts on your phone in under 2 minutes</div>
+        <div class="role-item"><span class="role-check">→</span>Upload one backup doc — optional but available</div>
+        <div class="role-item"><span class="role-check">→</span>Pre-authorized digital signature — no wet sign, no printing</div>
+        <div class="role-item"><span class="role-check">→</span>Immediate confirmation that your submission was received</div>
+      </div>
+      <div class="role-no-more">
+        <div class="role-gets-title">No more</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Calling the PM to find out how to submit</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Emailing invoices and never knowing if they were received</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Forgetting the deadline because no one reminded you</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Getting paid late because your invoice sat in someone's inbox</div>
+      </div>
+    </div>
+    <div class="role-panel" id="role-billing">
+      <div class="role-gets">
+        <div class="role-gets-title">What you get</div>
+        <div class="role-item"><span class="role-check">→</span>Clear "Ready to Bill" status — no guessing if PM is done</div>
+        <div class="role-item"><span class="role-check">→</span>One click generates Excel and PDF in your existing template format</div>
+        <div class="role-item"><span class="role-check">→</span>All vendor backup docs bundled automatically</div>
+        <div class="role-item"><span class="role-check">→</span>Retainage calculated and tracked — no manual formula</div>
+        <div class="role-item"><span class="role-check">→</span>Flag an issue back to PM without leaving the system</div>
+        <div class="role-item"><span class="role-check">→</span>Full searchable billing history by project, vendor, and cycle</div>
+      </div>
+      <div class="role-no-more">
+        <div class="role-gets-title">No more</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Manually re-entering data from emails into a spreadsheet</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Reformatting invoices to match the client template</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Hunting for backup docs across email threads and folders</div>
+        <div class="no-more-item"><span class="no-more-x">✕</span>Holding up billing because one sub's doc is missing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare-section">
+  <div class="section-inner">
+    <div class="section-eyebrow">The Gap We Fill</div>
+    <h2 class="section-title">The control layer that works<br>where others don't reach.</h2>
+    <p class="section-sub">Enterprise platforms are built for scale — at a price that only makes sense at scale. Generic tools don't understand construction. Construct Ops fills the gap in between.</p>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;width:36%">Capability</th>
+            <th class="co-col">Construct Ops</th>
+            <th>Enterprise Platforms</th>
+            <th>Spreadsheets & Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-divider"><td colspan="4">Billing Control</td></tr>
+          <tr><td>Purpose-built for mid-size GC operations</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Overbuilt &amp; overpriced</span></td><td><span class="pc-neutral">Underbuilt</span></td></tr>
+          <tr><td>Budget file becomes live ledger from day one</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Manual setup required</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr><td>Automated vendor deadline reminders</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Available at full cost</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr><td>Billing package in your exact template format</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Custom dev needed</span></td><td><span class="pc-neutral">Manual every time</span></td></tr>
+          <tr><td>PM audit trail on every edit</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Partial</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr class="cat-divider"><td colspan="4">Subcontractor Experience</td></tr>
+          <tr><td>Magic-link mobile submission — no app install</td><td><span class="co-win">✓</span></td><td><span class="pc-lose">✕ App or portal required</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr><td>Sub sees budget context before entering amounts</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Partial</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr><td>Digital signature on every submission</td><td><span class="co-win">✓</span></td><td><span class="co-win">✓</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr><td>Works for subs who never leave the job site</td><td><span class="co-win">✓</span></td><td><span class="pc-lose">✕</span></td><td><span class="pc-lose">✕</span></td></tr>
+          <tr class="cat-divider"><td colspan="4">Cost & Scalability</td></tr>
+          <tr><td>Flat monthly fee — not a % of your revenue</td><td><span class="co-win">✓</span></td><td><span class="pc-lose">✕ Revenue-based pricing</span></td><td><span class="co-win">✓ But costs you in time</span></td></tr>
+          <tr><td>Cost stays flat as your revenue grows</td><td><span class="co-win">✓</span></td><td><span class="pc-lose">✕ Grows with your volume</span></td><td><span class="pc-neutral">Grows in chaos</span></td></tr>
+          <tr><td>Operational in 6–8 weeks</td><td><span class="co-win">✓</span></td><td><span class="pc-lose">✕ Months of implementation</span></td><td><span class="pc-neutral">Already in use</span></td></tr>
+          <tr><td>Works alongside your existing enterprise tools</td><td><span class="co-win">✓</span></td><td><span class="pc-neutral">Replaces everything</span></td><td><span class="pc-lose">✕</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="background:rgba(249,115,22,0.06);border:1px solid var(--orange-border);border-radius:var(--r2);padding:20px 24px;margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center">
+      <div><div style="font-family:var(--font-display);font-size:22px;color:var(--orange);margin-bottom:4px">$273B</div><div style="font-size:12px;color:var(--g3)">Lost annually to construction billing delays and disputes (Deloitte, 2024)</div></div>
+      <div><div style="font-family:var(--font-display);font-size:22px;color:var(--orange);margin-bottom:4px">92%</div><div style="font-size:12px;color:var(--g3)">Of GCs track retainage manually — a single error can cost tens of thousands</div></div>
+      <div><div style="font-family:var(--font-display);font-size:22px;color:var(--orange);margin-bottom:4px">6–8wk</div><div style="font-size:12px;color:var(--g3)">To be fully operational — vs. months for enterprise platform implementation</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<!-- SOFT GATE -->
+<div style="background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);padding:56px 5%;text-align:center;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05)">
+  <div style="max-width:600px;margin:0 auto">
+    <div style="font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin-bottom:12px">Before You Go Further</div>
+    <div style="font-family:var(--font-display);font-size:clamp(22px,3vw,32px);color:var(--white);font-weight:400;margin-bottom:12px;line-height:1.2">The details are better in a conversation.</div>
+    <div style="font-size:15px;color:var(--g2);line-height:1.7;margin-bottom:24px">Pricing, implementation timeline, and the full platform demo are tailored to your project count and operation. It takes 15 minutes. No commitment required.</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-hero btn-hero-primary" onclick="scrollToDemo()">Book a 15-Minute Call →</button>
+      <button class="btn-hero btn-hero-ghost" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing Tiers First</button>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-title">Scales with your project count.<br>Not your revenue.</h2>
+    <p class="section-sub">One-time setup. Monthly fee by active project count — starting under $50 per day. The more projects you run, the lower your cost per project. No revenue-based fees. Ever.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Tier 1 — Foundation</div>
+        <div class="price-name">1–2 Active Projects</div>
+        <div class="price-amount" style="font-size:28px;margin:10px 0 4px">Tier 1 Pricing</div>
+        <div class="price-per">Discussed on your discovery call</div>
+        <div class="price-setup">One-time setup · Year 1 only · No revenue-based fees</div>
+        <div class="price-desc">Everything needed to get operational fast. Core submission system, automated reminders, billing readiness dashboard.</div>
+        <div class="price-feat">Core submission — app + magic link SMS</div>
+        <div class="price-feat">Project management + accounting integration</div>
+        <div class="price-feat">Automated deadline reminders</div>
+        <div class="price-feat">Billing readiness dashboard</div>
+        <div class="price-feat">Email support</div>
+        <button class="price-cta ghost" onclick="scrollToDemo()">Book a Discovery Call</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-ribbon">Most Popular</div>
+        <div class="price-tier">Tier 2 — Growth</div>
+        <div class="price-name">3–7 Active Projects</div>
+        <div class="price-amount featured" style="font-size:28px;margin:10px 0 4px">Tier 2 Pricing</div>
+        <div class="price-per">Discussed on your discovery call</div>
+        <div class="price-setup">One-time setup · Year 1 only · No revenue-based fees</div>
+        <div class="price-desc">Multi-location, advanced analytics, custom workflows, priority support, quarterly business reviews.</div>
+        <div class="price-feat">Everything in Tier 1</div>
+        <div class="price-feat">Multi-location support</div>
+        <div class="price-feat">Custom workflow per project type</div>
+        <div class="price-feat">Advanced analytics + real-time dashboards</div>
+        <div class="price-feat">Quarterly business reviews</div>
+        <div class="price-feat">Priority phone + email support</div>
+        <button class="price-cta" onclick="scrollToDemo()">Book a Discovery Call</button>
+        <div class="pricing-callout">Unlike revenue-based enterprise platforms that grow in cost as you grow in revenue, Construct Ops pricing is tied to your <strong>active project count</strong> — not your ACV. Growing from $50M to $100M doesn't change your monthly fee unless you add projects above your current tier.</div>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Tier 3 — Scale</div>
+        <div class="price-name">8+ Active Projects</div>
+        <div class="price-amount" style="font-size:28px;margin:10px 0 4px">Tier 3 Pricing</div>
+        <div class="price-per">Discussed on your discovery call</div>
+        <div class="price-setup">One-time setup · Year 1 only · No revenue-based fees</div>
+        <div class="price-desc">Dedicated account team, API access, portfolio-wide automation, acquisition onboarding playbooks.</div>
+        <div class="price-feat">Everything in Tier 2</div>
+        <div class="price-feat">Dedicated account team</div>
+        <div class="price-feat">24-hour response SLA</div>
+        <div class="price-feat">API access for custom integrations</div>
+        <div class="price-feat">Acquisition onboarding playbooks</div>
+        <div class="price-feat">Portfolio-wide automation</div>
+        <button class="price-cta ghost" onclick="scrollToDemo()">Book a Discovery Call</button>
+      </div>
+    </div>
+    <div style="background:rgba(249,115,22,0.06);border:1px solid var(--orange-border);border-radius:var(--r2);padding:20px 24px;margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:12px;color:var(--orange);text-transform:uppercase;letter-spacing:.08em;font-weight:500;margin-bottom:4px">Founding Partner Offer</div>
+        <div style="font-size:16px;color:var(--white);font-weight:500;margin-bottom:4px">First cohort gets setup fee waived + priority onboarding.</div>
+        <div style="font-size:13px;color:var(--g2)">No long-term contracts. Cancel anytime. Setup fee does not repeat in year 2 or 3.</div>
+      </div>
+      <button class="btn-hero btn-hero-primary" onclick="scrollToDemo()" style="flex-shrink:0">Claim Founding Partner Spot →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap" style="background:var(--navy2)">
+  <div class="section-inner">
+    <div class="section-eyebrow">What We're Building</div>
+    <h2 class="section-title">Operational today.<br>Built to grow with you.</h2>
+    <p class="section-sub">The foundation ships in 6–8 weeks. Everything after it builds on the same data layer — no reinvention, no migration.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px">
+      <div class="rm-card now" style="grid-row:span 1">
+        <div class="rm-phase orange">What ships first</div>
+        <div class="rm-title">Billing Control — Operational in 6–8 Weeks</div>
+        <div class="rm-when" style="margin-bottom:18px">The foundation everything else runs on</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Budget file upload → live project ledger</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Magic-link sub mobile submission — no app install</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Automated deadline reminders via SMS and email</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>PM batch review with full audit trail</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Billing package generator — your template, one click</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Project management + accounting integration</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Document auto-filing and searchable history</div>
+        <div class="rm-item"><div class="rm-dot" style="background:var(--orange)"></div>Multi-location, multi-project from day one</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);padding:22px">
+          <div style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin-bottom:8px">Where We're Headed</div>
+          <div style="font-family:var(--font-display);font-size:17px;color:var(--white);font-weight:400;margin-bottom:14px">Financial Visibility & Cash Control</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Change order workflow and approval tracking</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Payment received log and AR aging dashboard</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Lien waiver collection tied to payments</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Over-billing detection and dispute isolation</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);padding:22px">
+          <div style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin-bottom:8px">The Bigger Vision</div>
+          <div style="font-family:var(--font-display);font-size:17px;color:var(--white);font-weight:400;margin-bottom:14px">Portfolio Intelligence at Scale</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Predictive cash flow across your entire portfolio</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Vendor performance and compliance tracking</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Executive dashboards built for ownership visibility</div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--g3)"></div>Acquisition onboarding — new companies operational fast</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(249,115,22,0.06);border:1px solid var(--orange-border);border-radius:var(--r2);padding:20px 24px;margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px">Want the full platform detail?</div>
+        <div style="font-size:13px;color:var(--g2)">We walk through the complete roadmap on every discovery call — including what we're building next and how it maps to your operation.</div>
+      </div>
+      <button class="btn-hero btn-hero-primary" onclick="scrollToDemo()" style="flex-shrink:0;padding:11px 24px;font-size:14px">Book Your Call →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof-section">
+  <div class="section-inner">
+    <div class="section-eyebrow">Early Partners</div>
+    <h2 class="section-title" style="font-size:clamp(24px,3vw,36px)">What operators say.</h2>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-quote">We were losing two to three billing cycles a year to late submissions. The first month on Construct Ops, every vendor submitted on time. That alone paid for the platform ten times over.</div>
+        <div class="proof-author"><div class="proof-avatar">MH</div><div><div class="proof-name">Marcus H.</div><div class="proof-role">Project Manager · Houston, TX</div></div></div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-quote">I used to spend the last week of every month chasing invoices. Now I spend 30 minutes reviewing a batch and clicking approve. The time I got back is real.</div>
+        <div class="proof-author"><div class="proof-avatar">ST</div><div><div class="proof-name">Sandra T.</div><div class="proof-role">Senior PM · Chicago, IL</div></div></div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-quote">As the director overseeing multiple PMs and projects, I finally have a single view of where every billing cycle stands. That visibility changes how I run the business.</div>
+        <div class="proof-author"><div class="proof-avatar">JR</div><div><div class="proof-name">James R.</div><div class="proof-role">Director of Operations</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO GATE -->
+<section class="gate-section" id="demo">
+  <div class="section-inner" style="max-width:1000px">
+    <div style="text-align:center;margin-bottom:56px">
+      <div class="section-eyebrow">See It Live</div>
+      <h2 class="section-title">Book a discovery call.<br><em style="font-style:italic;color:var(--orange)">Unlock the platform demo.</em></h2>
+      <p class="section-sub" style="margin:0 auto">15 minutes. We'll walk through your current billing process, show you exactly how Construct Ops fits, and give you access to the full interactive demo — personalized to your operation.</p>
+    </div>
+    <div class="gate-wrap" style="max-width:1000px;margin:0 auto">
+      <div class="gate-left">
+        <div class="gate-preview">
+          <div class="gate-preview-blur">
+            <div class="gate-lock">🔒</div>
+            <div style="font-family:var(--font-display);font-size:16px;color:var(--white);margin-bottom:6px">Platform Demo</div>
+            <div class="gate-lock-text">Book your discovery call to unlock the full interactive demo — tailored to your projects.</div>
+          </div>
+          <div class="gate-preview-content">
+            <div style="font-size:10px;color:var(--g3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">PM Dashboard — All Projects</div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+              <div style="background:var(--navy4);border-radius:6px;padding:8px 12px;text-align:center;min-width:80px"><div style="font-size:18px;color:var(--white);font-weight:600">6</div><div style="font-size:9px;color:var(--g3)">Active Projects</div></div>
+              <div style="background:var(--navy4);border-radius:6px;padding:8px 12px;text-align:center;min-width:80px"><div style="font-size:18px;color:var(--amber)">3</div><div style="font-size:9px;color:var(--g3)">Missing Subs</div></div>
+              <div style="background:var(--navy4);border-radius:6px;padding:8px 12px;text-align:center;min-width:80px"><div style="font-size:18px;color:var(--green)">$1.24M</div><div style="font-size:9px;color:var(--g3)">Ready to Bill</div></div>
+            </div>
+            <div style="font-size:10px;color:var(--g3);margin-bottom:6px">Riverside Logistics Hub</div>
+            <div class="mini-progress" style="margin-bottom:12px"><div class="mini-progress-fill" style="width:62%"></div></div>
+            <div style="font-size:10px;color:var(--g3);margin-bottom:6px">Midtown Office Build-Out</div>
+            <div class="mini-progress" style="margin-bottom:12px"><div class="mini-progress-fill" style="width:44%"></div></div>
+            <div style="font-size:10px;color:var(--g3);margin-bottom:6px">Westport Industrial Phase 2</div>
+            <div class="mini-progress"><div class="mini-progress-fill" style="width:38%"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:24px">
+          <div class="what-to-expect">
+            <div class="expect-item"><span class="expect-check">→</span>15-minute focused conversation — no sales pitch</div>
+            <div class="expect-item"><span class="expect-check">→</span>We map Construct Ops to your specific projects and billing process</div>
+            <div class="expect-item"><span class="expect-check">→</span>You get access to the full interactive demo immediately after</div>
+            <div class="expect-item"><span class="expect-check">→</span>Founding partner pricing locked in for early cohort</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="gate-form-wrap">
+          <div id="form-main">
+            <div class="gate-form-title">Book Your Discovery Call</div>
+            <div class="gate-form-sub">Fill in your details and we'll reach out within 24 hours to schedule a time that works for you.</div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" placeholder="James" id="f-first"></div>
+              <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" placeholder="Rivera" id="f-last"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Work Email</label><input class="form-input" type="email" placeholder="james@yourcompany.com" id="f-email"></div>
+            <div class="form-group"><label class="form-label">Company / GC Name</label><input class="form-input" type="text" placeholder="Rivera Construction Group" id="f-company"></div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Active Projects</label>
+                <select class="form-select" id="f-projects">
+                  <option value="">Select range</option>
+                  <option>1–2 projects</option>
+                  <option>3–7 projects</option>
+                  <option>8+ projects</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Role</label>
+                <select class="form-select" id="f-role">
+                  <option value="">Your role</option>
+                  <option>Owner / Principal</option>
+                  <option>Director / VP</option>
+                  <option>Project Manager</option>
+                  <option>CFO / Controller</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Biggest billing pain point (optional)</label><input class="form-input" type="text" placeholder="e.g. late sub submissions, no visibility into cycle status…" id="f-pain"></div>
+            <button class="form-submit" onclick="submitForm()">
+              Book My Discovery Call →
+            </button>
+            <div class="form-privacy">No commitment. No spam. Your information is used only to schedule your call.</div>
+          </div>
+          <div class="form-success" id="form-success">
+            <div class="form-success-icon">🎉</div>
+            <div class="form-success-title">You're booked in.</div>
+            <div class="form-success-sub">We'll reach out within 24 hours to confirm your time. In the meantime, check your inbox — we've sent you a preview of the platform.</div>
+            <div class="what-to-expect" style="text-align:left">
+              <div class="expect-item"><span class="expect-check">✓</span>Confirmation email sent</div>
+              <div class="expect-item"><span class="expect-check">✓</span>Founding partner pricing reserved</div>
+              <div class="expect-item"><span class="expect-check">✓</span>Full platform demo unlocked — link in your email</div>
+            </div>
+            <button class="btn-hero btn-hero-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="window.open('ConstructOps-Demo.html','_blank')">Open Platform Demo →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POWERED BY BAR -->
+<div class="powered-bar">
+  <span class="powered-text">Powered by</span>
+  <a href="https://aifusioniqlabs.com" target="_blank" class="powered-brand">
+    <div class="powered-logo">AI</div>
+    <span class="powered-name"><span>AI FusionIQ</span> Labs</span>
+  </a>
+  <span class="powered-text" style="margin-left:8px">· Operational AI built for real business</span>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand-block">
+        <div class="footer-brand">
+          <div class="footer-logo">CO</div>
+          <span class="footer-brand-name">Construct Ops</span>
+        </div>
+        <div class="footer-brand-desc">Billing control for construction operations. One system. All projects. All locations.</div>
+        <div style="margin-top:14px;font-size:12px;color:var(--g3)">A platform by <a href="https://aifusioniqlabs.com" target="_blank" style="color:var(--orange);text-decoration:none">AI FusionIQ Labs</a></div>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-links-title">Platform</div>
+        <a href="#how" class="footer-link">How It Works</a>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#pricing" class="footer-link">Pricing</a>
+        <a href="#roadmap" class="footer-link">Roadmap</a>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-links-title">Company</div>
+        <a href="https://aifusioniqlabs.com" target="_blank" class="footer-link">AI FusionIQ Labs</a>
+        <a href="https://linkedin.com/in/bennysingh" target="_blank" class="footer-link">LinkedIn</a>
+        <a href="mailto:hello@constructops.io" class="footer-link">hello@constructops.io</a>
+        <a href="tel:+18329374786" class="footer-link">+1 (832) 937-4786</a>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-links-title">Get Started</div>
+        <a href="https://avensis-logflow.vercel.app/shipper/login" class="footer-link" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
+        <a href="https://avensis-logflow.vercel.app/shipper/login" class="footer-link" target="_blank" rel="noopener noreferrer">Founding Partner Offer</a>
+        <a href="#pricing" class="footer-link">View Pricing</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Construct Ops · AI FusionIQ Labs. All rights reserved.</div>
+      <div class="footer-powered">Built in Houston, TX · <a href="https://aifusioniqlabs.com" target="_blank">aifusioniqlabs.com</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
+
+<script>
+const howTitles=['Budget Upload','Billing Cycle Open','Sub Submission','PM Batch Review','Billing Package'];
+function setHowStep(n){
+  document.querySelectorAll('.how-step').forEach((s,i)=>{s.classList.toggle('active',i===n)});
+  document.querySelectorAll('.screen-panel').forEach((p,i)=>{p.classList.toggle('active',i===n)});
+  document.getElementById('how-screen-title').textContent=howTitles[n];
+}
+
+function setRole(id){
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.role-panel').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('role-'+id).classList.add('active');
+}
+
+function scrollToDemo(){
+  window.open('https://avensis-logflow.vercel.app/shipper/login', '_blank', 'noopener,noreferrer');
+}
+
+let toastTimer;
+function showToast(msg){
+  clearTimeout(toastTimer);
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function submitForm(){
+  const first=document.getElementById('f-first').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const company=document.getElementById('f-company').value.trim();
+  if(!first||!email||!company){
+    showToast('Please fill in your name, email, and company to continue.');
+    return;
+  }
+  if(!email.includes('@')){
+    showToast('Please enter a valid work email address.');
+    return;
+  }
+  document.getElementById('form-main').style.display='none';
+  document.getElementById('form-success').style.display='block';
+  showToast('Booked! We\'ll be in touch within 24 hours.');
+}
+
+// Auto-advance how-it-works panels
+let howTimer=setInterval(()=>{
+  const active=document.querySelector('.how-step.active');
+  const steps=document.querySelectorAll('.how-step');
+  const idx=Array.from(steps).indexOf(active);
+  setHowStep((idx+1)%steps.length);
+},4000);
+document.querySelectorAll('.how-step').forEach(s=>{
+  s.addEventListener('click',()=>{clearInterval(howTimer)});
+});
+</script>
+</body>
+</html>
